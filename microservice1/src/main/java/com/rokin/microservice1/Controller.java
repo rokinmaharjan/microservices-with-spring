@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
+import java.util.concurrent.TimeoutException;
 
 @RestController
 @RequestMapping(value = "/microservice1")
@@ -15,6 +16,9 @@ public class Controller {
 
     @Value("${server.port}")
     private String port;
+
+    @Autowired
+    private Microservice1Service microservice1Service;
 
     @Autowired
     private Microservice2FeignClient microservice2FeignClient;
@@ -30,5 +34,26 @@ public class Controller {
         response.put("microservice1", port);
 
         return response;
+    }
+
+    @GetMapping("/circuit-breaker")
+    public String demoCircuitBreaker(@RequestParam String status) throws TimeoutException {
+
+        return microservice1Service.circuitBreakerMethod(status);
+    }
+
+    @GetMapping("/bulkhead")
+    public String demoBulkhead() throws InterruptedException {
+        return microservice1Service.bulkheadMethod();
+    }
+
+    @GetMapping("/retry")
+    public String demoRetry() throws TimeoutException {
+        return microservice1Service.retryMethod();
+    }
+
+    @GetMapping("/ratelimiter")
+    public String demoRateLimiter() throws InterruptedException {
+        return microservice1Service.rateLimiterMethod();
     }
 }
