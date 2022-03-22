@@ -18,7 +18,7 @@ services:
     ports:
       - "8070:8070"
     environment:
-      SPRING_CLOUD_CONFIG_URI: "http://configserver:8071"
+      spring_cloud_config_uri: "http://configserver:8071"
     healthcheck:
       test: "curl --fail --silent localhost:8070/actuator/health | grep UP || exit 1"
       interval: 10s
@@ -34,8 +34,9 @@ services:
   microservice1:
     image: microservice1
     environment:
-      SPRING_CLOUD_CONFIG_URI: "http://configserver:8071"
-      SERVER_PORT: "8080"
+      spring_cloud_config_uri: "http://configserver:8071"
+      # eureka.client.serviceUrl.defaultZone: "http://eurekaserver:8070/eureka/"
+      server_port: "8080"
     depends_on:
       configserver:
         condition: service_healthy
@@ -48,8 +49,9 @@ services:
   microservice2:
     image: microservice2
     environment:
-      SPRING_CLOUD_CONFIG_URI: "http://configserver:8071"
-      SERVER_PORT: "8081"
+      spring_cloud_config_uri: "http://configserver:8071"
+      # eureka_client_serviceUrl_defaultZone: "http://eurekaserver:8070/eureka/"
+      server_port: "8081"
     depends_on:
       configserver:
         condition: service_healthy
@@ -62,8 +64,9 @@ services:
   microservice2_2:
     image: microservice2
     environment:
-      SPRING_CLOUD_CONFIG_URI: "http://configserver:8071"
-      SERVER_PORT: "8083"
+      spring_cloud_config_uri: "http://configserver:8071"
+      # eureka_client_serviceUrl_defaultZone: "http://eurekaserver:8070/eureka/"
+      server_port: "8083"
     depends_on:
       configserver:
         condition: service_healthy
@@ -76,8 +79,9 @@ services:
   microservice3:
     image: microservice3
     environment:
-      SPRING_CLOUD_CONFIG_URI: "http://configserver:8071"
-      SERVER_PORT: "8082"
+      spring_cloud_config_uri: "http://configserver:8071"
+      # eureka_client_serviceUrl_defaultZone: "http://eurekaserver:8070/eureka/"
+      server_port: "8082"
     depends_on:
       configserver:
         condition: service_healthy
@@ -90,8 +94,9 @@ services:
   microservice3_2:
     image: microservice3
     environment:
-      SPRING_CLOUD_CONFIG_URI: "http://configserver:8071"
-      SERVER_PORT: "8084"
+      spring_cloud_config_uri: "http://configserver:8071"
+      # eureka_client_serviceUrl_defaultZone: "http://eurekaserver:8070/eureka/"
+      server_port: "8084"
     depends_on:
       configserver:
         condition: service_healthy

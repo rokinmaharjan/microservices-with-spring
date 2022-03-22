@@ -4,3 +4,64 @@ spring:
   cloud:
     config:
       uri: http://localhost:8071
+
+server:
+  port: 8080
+
+
+#management:
+#  health:
+#    circuitbreakers:
+#      enabled: true
+#  endpoint:
+#    health:
+#      show-details: always
+#management.health.ratelimiters.enabled: true
+
+#Circuitbreaker config
+resilience4j.circuitbreaker:
+  instances:
+    microservice1:
+      registerHealthIndicator: true
+      ringBufferSizeInClosedState: 5
+      ringBufferSizeInHalfOpenState: 3
+      waitDurationInOpenState: 10s
+      failureRateThreshold: 50 #This is percentage
+      recordExceptions:
+        - org.springframework.web.client.HttpServerErrorException
+        - java.io.IOException
+        - java.util.concurrent.TimeoutException
+        - org.springframework.web.client.ResourceAccessException
+
+#Bulkhead config
+# Default bulkhead - semaphore
+resilience4j.bulkhead:
+  instances:
+    microservice1:
+      maxWaitDuration: 10ms
+      maxConcurrentCalls: 20
+# Thread-pool bulkhead
+resilience4j.thread-pool-bulkhead:
+  instances:
+    microservice1:
+      maxThreadPoolSize: 10 #Default is getRuntime().availableProcessors()
+      coreThreadPoolSize: 10 #Default is getRuntime().availableProcessors()
+      queueCapacity: 10
+      keepAliveDuration: 20ms
+
+#Retry config
+resilience4j.retry:
+  instances:
+    microservice1:
+      maxRetryAttempts: 5
+      waitDuration: 3000
+      retry-exceptions:
+        - java.util.concurrent.TimeoutException
+
+#Rate-Limiter config
+resilience4j.ratelimiter:
+  instances:
+    microservice1:
+      timeoutDuration: 1000ms
+      limitRefreshPeriod: 5000
+      limitForPeriod: 5
