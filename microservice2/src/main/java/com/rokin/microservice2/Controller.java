@@ -1,5 +1,8 @@
 package com.rokin.microservice2;
 
+import com.rokin.microservice2.usercontext.UserContextHolder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,7 +20,10 @@ public class Controller {
     private String port;
 
     @Autowired
-    private BackedRestClient backedRestClient;
+    private Microservice2Service microservice2Service;
+
+    private static final Logger logger = LoggerFactory.getLogger(Controller.class);
+
 
     @GetMapping
     public String sayHi() {
@@ -26,9 +32,15 @@ public class Controller {
 
     @GetMapping("/instances")
     public Map<String, Object> getInstances(@RequestParam String serviceId) {
-        Map<String, Object> response = backedRestClient.getInstances(serviceId);
+        Map<String, Object> response = microservice2Service.getInstances(serviceId);
         response.put("microservice2", port);
 
         return response;
+    }
+
+    @GetMapping("/custom-header")
+    public String testCustomHeaderViaUserContext() {
+        logger.debug("Microservice2 custom-header: {}", UserContextHolder.getContext().getCustomHeader());
+        return microservice2Service.sayHiToMicroservice3();
     }
 }

@@ -1,0 +1,45 @@
+server:
+  port: 8072
+
+eureka:
+  instance:
+    preferIpAddress: true
+  client:
+    registerWithEureka: true
+    fetchRegistry: true
+    serviceUrl:
+#      defaultZone: http://localhost:8070/eureka/
+      defaultZone: http://eurekaserver:8070/eureka/
+
+
+spring:
+  cloud:
+    loadbalancer.ribbon.enabled: false
+    gateway:
+      routes:
+        - id: microservice1
+          uri: lb://microservice1
+          predicates:
+            - Path=/api/microservice1/**
+          filters:
+            - RewritePath=/api/microservice1/(?<path>.*), /$\{path}
+        - id: microservice2
+          uri: lb://microservice2
+          predicates:
+            - Path=/api/microservice2/**
+          filters:
+            - RewritePath=/api/microservice2/(?<path>.*), /$\{path}
+        - id: microservice3
+          uri: lb://microservice3
+          predicates:
+            - Path=/api/microservice3/**
+          filters:
+            - RewritePath=/api/microservice3/(?<path>.*), /$\{path}
+            - SetResponseHeader= exampleHeaderKey, exampleHeaderValue
+
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
