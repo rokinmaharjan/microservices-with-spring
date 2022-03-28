@@ -1,10 +1,7 @@
 package com.rokin.microservice3;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
@@ -16,8 +13,8 @@ public class Controller {
     private SpringDiscoveryClient discoveryClient;
 
     @GetMapping
-    public String sayHi() {
-        return "Hi! from microservice3";
+    public String sayHi(@RequestHeader("custom-header") String customHeader) {
+        return String.format("Hi from microservice3 with custom-header %s", customHeader);
     }
 
     @GetMapping("/instances")
