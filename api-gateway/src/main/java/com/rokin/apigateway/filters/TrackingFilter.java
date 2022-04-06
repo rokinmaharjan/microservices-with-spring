@@ -1,5 +1,7 @@
 package com.rokin.apigateway.filters;
 
+import org.apache.commons.codec.binary.Base64;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,6 +51,9 @@ public class TrackingFilter implements GlobalFilter {
             logger.debug("custom-header generated in tracking filter: {}.", customHeader);
         }
 
+        System.out.println("The authentication name from the token is : " + getUsername(requestHeaders));
+
+
         return chain.filter(exchange);
     }
 
@@ -60,5 +65,26 @@ public class TrackingFilter implements GlobalFilter {
         return false;
     }
 
+    private String getUsername(HttpHeaders requestHeaders){
+        String username = "";
+        if (filterUtils.getAuthToken(requestHeaders)!=null){
+            String authToken = filterUtils.getAuthToken(requestHeaders).replace("Bearer ","");
+            JSONObject jsonObj = decodeJWT(authToken);
+            try {
+                username = jsonObj.getString("preferred_username");
+            }catch(Exception e) {logger.debug(e.getMessage());}
+        }
+        return username;
+    }
+
+
+    private JSONObject decodeJWT(String JWTToken) {
+        String[] split_string = JWTToken.split("\\.");
+        String base64EncodedBody = split_string[1];
+        Base64 base64Url = new Base64(true);
+        String body = new String(base64Url.decode(base64EncodedBody));
+        JSONObject jsonObj = new JSONObject(body);
+        return jsonObj;
+    }
 
 }

@@ -31,96 +31,116 @@ services:
       backend:
         aliases:
           - "eurekaserver"
-  apigateway:
-    image: api-gateway
-    ports:
-      - "8072:8072"
+  keycloak:
+    image: jboss/keycloak:14.0.0
+    restart: always
     environment:
-      spring_cloud_config_uri: "http://configserver:8071"
-    depends_on:
-      configserver:
-        condition: service_healthy
-      eurekaserver:
-        condition: service_healthy
-    networks:
-      backend:
-        aliases:
-          - "api-gateway"
-  microservice1:
-    image: microservice1
-    environment:
-      spring_cloud_config_uri: "http://configserver:8071"
-      # eureka.client.serviceUrl.defaultZone: "http://eurekaserver:8070/eureka/"
-      server_port: "8080"
-    depends_on:
-      configserver:
-        condition: service_healthy
-      eurekaserver:
-        condition: service_healthy
+      KEYCLOAK_IMPORT: /tmp/realm-export.json
+      KEYCLOAK_USER: rokin
+      KEYCLOAK_PASSWORD: admin
+    volumes:
+      - ./realm-export.json:/tmp/realm-export.json
+    command:
+      - "-b 0.0.0.0"
+      # - "-Dkeycloak.import=/opt/jboss/keycloak/realm-export.json"
+      - "-Dkeycloak.profile.feature.scripts=enabled"
+      - "-Dkeycloak.profile.feature.upload_scripts=enabled"
     ports:
       - "8080:8080"
     networks:
-      - backend
-  microservice2:
-    image: microservice2
-    environment:
-      spring_cloud_config_uri: "http://configserver:8071"
-      # eureka_client_serviceUrl_defaultZone: "http://eurekaserver:8070/eureka/"
-      server_port: "8081"
-    depends_on:
-      configserver:
-        condition: service_healthy
-      eurekaserver:
-        condition: service_healthy
-    ports:
-      - "8081:8081"
-    networks:
-      - backend
-  microservice2_2:
-    image: microservice2
-    environment:
-      spring_cloud_config_uri: "http://configserver:8071"
-      # eureka_client_serviceUrl_defaultZone: "http://eurekaserver:8070/eureka/"
-      server_port: "8083"
-    depends_on:
-      configserver:
-        condition: service_healthy
-      eurekaserver:
-        condition: service_healthy
-    ports:
-      - "8083:8083"
-    networks:
-      - backend
-  microservice3:
-    image: microservice3
-    environment:
-      spring_cloud_config_uri: "http://configserver:8071"
-      # eureka_client_serviceUrl_defaultZone: "http://eurekaserver:8070/eureka/"
-      server_port: "8082"
-    depends_on:
-      configserver:
-        condition: service_healthy
-      eurekaserver:
-        condition: service_healthy
-    ports:
-      - "8082:8082"
-    networks:
-      - backend
-  microservice3_2:
-    image: microservice3
-    environment:
-      spring_cloud_config_uri: "http://configserver:8071"
-      # eureka_client_serviceUrl_defaultZone: "http://eurekaserver:8070/eureka/"
-      server_port: "8084"
-    depends_on:
-      configserver:
-        condition: service_healthy
-      eurekaserver:
-        condition: service_healthy
-    ports:
-      - "8084:8084"
-    networks:
-      - backend
+      backend:
+        aliases:
+          - "keycloak"
+#  apigateway:
+#    image: api-gateway
+#    ports:
+#      - "8072:8072"
+#    environment:
+#      spring_cloud_config_uri: "http://configserver:8071"
+#    depends_on:
+#      configserver:
+#        condition: service_healthy
+#      eurekaserver:
+#        condition: service_healthy
+#    networks:
+#      backend:
+#        aliases:
+#          - "api-gateway"
+#  microservice1:
+#    image: microservice1
+#    environment:
+#      spring_cloud_config_uri: "http://configserver:8071"
+#      # eureka.client.serviceUrl.defaultZone: "http://eurekaserver:8070/eureka/"
+#      server_port: "8081"
+#    depends_on:
+#      configserver:
+#        condition: service_healthy
+#      eurekaserver:
+#        condition: service_healthy
+#    ports:
+#      - "8081:8081"
+#    networks:
+#      - backend
+#  microservice2:
+#    image: microservice2
+#    environment:
+#      spring_cloud_config_uri: "http://configserver:8071"
+#      # eureka_client_serviceUrl_defaultZone: "http://eurekaserver:8070/eureka/"
+#      server_port: "8082"
+#    depends_on:
+#      configserver:
+#        condition: service_healthy
+#      eurekaserver:
+#        condition: service_healthy
+#    ports:
+#      - "8082:8082"
+#    networks:
+#      - backend
+#  microservice2_2:
+#    image: microservice2
+#    environment:
+#      spring_cloud_config_uri: "http://configserver:8071"
+#      # eureka_client_serviceUrl_defaultZone: "http://eurekaserver:8070/eureka/"
+#      server_port: "8084"
+#    depends_on:
+#      configserver:
+#        condition: service_healthy
+#      eurekaserver:
+#        condition: service_healthy
+#    ports:
+#      - "8084:8084"
+#    networks:
+#      - backend
+#  microservice3:
+#    image: microservice3
+#    environment:
+#      spring_cloud_config_uri: "http://configserver:8071"
+#      # eureka_client_serviceUrl_defaultZone: "http://eurekaserver:8070/eureka/"
+#      server_port: "8083"
+#    depends_on:
+#      configserver:
+#        condition: service_healthy
+#      eurekaserver:
+#        condition: service_healthy
+#    ports:
+#      - "8083:8083"
+#    networks:
+#      - backend
+#  microservice3_2:
+#    image: microservice3
+#    environment:
+#      spring_cloud_config_uri: "http://configserver:8071"
+#      # eureka_client_serviceUrl_defaultZone: "http://eurekaserver:8070/eureka/"
+#      server_port: "8085"
+#    depends_on:
+#      configserver:
+#        condition: service_healthy
+#      eurekaserver:
+#        condition: service_healthy
+#    ports:
+#      - "8085:8085"
+#    networks:
+#      - backend
 
 networks:
   backend:

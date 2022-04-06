@@ -6,4 +6,4 @@ spring:
       uri: http://localhost:8071
 
 server:
-  port: 8081
+  port: 8082

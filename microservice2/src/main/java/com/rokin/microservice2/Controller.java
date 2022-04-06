@@ -5,11 +5,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.security.RolesAllowed;
 import java.util.Map;
 
 @RestController
@@ -30,17 +28,30 @@ public class Controller {
         return "Hi! from microservice2";
     }
 
-    @GetMapping("/instances")
-    public Map<String, Object> getInstances(@RequestParam String serviceId) {
-        Map<String, Object> response = microservice2Service.getInstances(serviceId);
-        response.put("microservice2", port);
+//    @GetMapping("/instances")
+//    public Map<String, Object> getInstances(@RequestParam String serviceId) {
+//        Map<String, Object> response = microservice2Service.getInstances(serviceId);
+//        response.put("microservice2", port);
+//
+//        return response;
+//    }
+//
+//    @GetMapping("/custom-header")
+//    public String testCustomHeaderViaUserContext() {
+//        logger.debug("Microservice2 custom-header: {}", UserContextHolder.getContext().getCustomHeader());
+//        return microservice2Service.sayHiToMicroservice3();
+//    }
 
-        return response;
+    @RolesAllowed({"ADVISOR"})
+    @PostMapping("/advise/{courseId}")
+    public String advise(@PathVariable String courseId) {
+        return microservice2Service.advise(courseId);
     }
 
-    @GetMapping("/custom-header")
-    public String testCustomHeaderViaUserContext() {
-        logger.debug("Microservice2 custom-header: {}", UserContextHolder.getContext().getCustomHeader());
-        return microservice2Service.sayHiToMicroservice3();
+    @RolesAllowed({"ADMIN"})
+    @GetMapping("/validate/{policyId}")
+    public String validate(@PathVariable String policyId) {
+        return policyId;
     }
+
 }
