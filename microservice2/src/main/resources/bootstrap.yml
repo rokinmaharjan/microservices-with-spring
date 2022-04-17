@@ -3,7 +3,13 @@ spring:
     name: microservice2
   cloud:
     config:
-      uri: http://localhost:8071
+      uri: http://configserver:8071
+#      uri: http://localhost:8071
+
 
 server:
   port: 8081
+
+redis:
+  server: redis
+  port: 6379

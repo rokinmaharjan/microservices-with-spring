@@ -7,8 +7,8 @@ public class UserContext {
     public static final String CORRELATION_ID = "tmx-correlation-id";
     public static final String CUSTOM_HEADER = "custom-header";
 
-    private String correlationId = new String();
-    private String customHeader = new String();
+    private String correlationId = "";
+    private String customHeader = "";
 
 
     public String getCorrelationId() {
