@@ -3,7 +3,8 @@ spring:
     name: microservice1
   cloud:
     config:
-      uri: http://localhost:8071
+      uri: http://configserver:8071
+#      uri: http://localhost:8071
 
 server:
   port: 8080
