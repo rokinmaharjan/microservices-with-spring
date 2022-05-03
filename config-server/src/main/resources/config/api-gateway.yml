@@ -35,6 +35,11 @@ spring:
           filters:
             - RewritePath=/microservice3/(?<path>.*), /$\{path}
             - SetResponseHeader= exampleHeaderKey, exampleHeaderValue
+  zipkin:
+    baseUrl: http://zipkin:9411
+  sleuth:
+    sampler:
+      percentage: 1
 
 
 management:
