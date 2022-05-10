@@ -3,6 +3,8 @@ package com.rokin.microservice3.controller;
 import com.rokin.microservice3.SpringDiscoveryClient;
 import com.rokin.microservice3.model.Organization;
 import com.rokin.microservice3.service.Microservice3Service;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,6 +19,8 @@ public class Controller {
 
     @Autowired
     private Microservice3Service microservice3Service;
+
+    private static final Logger logger = LoggerFactory.getLogger(Controller.class);
 
     @GetMapping
     public String sayHi(@RequestHeader("custom-header") String customHeader) {
@@ -35,6 +39,7 @@ public class Controller {
 
     @GetMapping("/organizations/{id}")
     public Organization getOrganizationById(@PathVariable String id) {
+        logger.info("Fetching organization with id: {}", id);
         return microservice3Service.getOrganizationById(id);
     }
 

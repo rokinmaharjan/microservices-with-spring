@@ -1,6 +1,8 @@
 package com.rokin.microservice2.service;
 
 
+import brave.ScopedSpan;
+import brave.Tracer;
 import com.rokin.microservice2.model.Organization;
 import com.rokin.microservice2.repository.RedisOrganizationRepository;
 import org.slf4j.Logger;
@@ -21,6 +23,9 @@ public class Microservice2Service {
 
     @Autowired
     private RedisOrganizationRepository organizationRepository;
+
+    @Autowired
+    Tracer tracer;
 
     private static final Logger logger = LoggerFactory.getLogger(Microservice2Service.class);
 
@@ -44,11 +49,16 @@ public class Microservice2Service {
     }
 
     private Organization checkRedisForOrganization(String organizationId) {
+        ScopedSpan newSpan = tracer.startScopedSpan("readOrgDataFromRedis");
         try {
             return organizationRepository.findById(organizationId).orElse(null);
         } catch (Exception e) {
             logger.error("Error occured while fetching organization '{}' from redis. Exception: {}", organizationId, e);
             return null;
+        } finally {
+            newSpan.tag("peer.service", "redis");
+            newSpan.annotate("Client received");
+            newSpan.finish();
         }
     }
 
